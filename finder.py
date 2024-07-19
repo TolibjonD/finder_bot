@@ -21,7 +21,6 @@ async def search(text):
 
     response=requests.get(url, params=params)
     results=response.json()
-    print(results)
     r_list = []
 
     if 'items' in results:
