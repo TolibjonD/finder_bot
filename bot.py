@@ -28,13 +28,16 @@ async def help(msg: types.Message):
 @dp.message(StateFilter(SearchingState.query))
 async def simple_handler(msg: types.Message, state: FSMContext):
     text = msg.text
-    lang_code = msg.from_user.language_code
-    data = await search(text, lang_code)
-    ans_text = f"🔎 Qidiriv natijangiz bo'yicha {len(data)} ta ma'lumot topildi"
-    await msg.answer(text=ans_text, reply_markup=simple)
-    await state.update_data({
-        "query": data
-    })
+    data = await search(text)
+    if type(data) == str:
+        await msg.answer(text=data)
+        await state.clear()
+    else:
+        ans_text = f"🔎 Qidiriv natijangiz bo'yicha {len(data)} ta ma'lumot topildi"
+        await msg.answer(text=ans_text, reply_markup=simple)
+        await state.update_data({
+            "query": data
+        })
 
 
 @dp.callback_query(MyCallback.filter(F.item=="Simple"))

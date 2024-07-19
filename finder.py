@@ -9,19 +9,19 @@ SEARCH_ENGINE_ID = env("SEARCH_ENGINE_ID")
 
         
 
-async def search(text, lang_code):
+def search(text):
     url = 'https://www.googleapis.com/customsearch/v1'
     params={
         'q': text,
         'key': API_KEY,
         'cx': SEARCH_ENGINE_ID,
-        'lr': f'lang_{lang_code}',
+        # 'lr': f'lang_{lang_code}',
         # 'gl': 'US'
     }
 
     response=requests.get(url, params=params)
     results=response.json()
-
+    print(results)
     r_list = []
 
     if 'items' in results:
@@ -35,4 +35,8 @@ async def search(text, lang_code):
             r_list.append(url)
         return r_list
     else:
-        return "Yout search query is not valid or your today's limit expired."
+        return "So'rovingiz bo'yicha hech qanday ma'lumot mavjud emas. Sizning kunlik foydalanish limitingiz yakuniga yetgan bo'lishi ham mumkin."
+    
+text = input("Search... ")
+r = search(text)
+print(r)
