@@ -99,7 +99,7 @@ async def previous_item(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=60)
     await call.message.delete()
     sleep(1)
-    text = f"{index+1}-Natija.\n"
+    text = f"{index+1}-natija {len(items)} dan.\n"
     text += f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
     text += f"\n<a href='{link}'>Batafsil...</a>"
