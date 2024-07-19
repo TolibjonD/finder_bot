@@ -36,7 +36,3 @@ def search(text):
         return r_list
     else:
         return "So'rovingiz bo'yicha hech qanday ma'lumot mavjud emas. Sizning kunlik foydalanish limitingiz yakuniga yetgan bo'lishi ham mumkin."
-    
-text = input("Search... ")
-r = search(text)
-print(r)
