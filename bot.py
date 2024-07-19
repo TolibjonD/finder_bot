@@ -14,10 +14,7 @@ from keyboards.default.startBtn import startBtn
 from states import SearchingState, ItemsState
 from aiogram.fsm.context import FSMContext
 from finder import search
-from aiogram.enums.content_type import ContentType
-
-from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TRANSITION, KICKED
-from aiogram.types import ChatMemberUpdated
+from test import instant_view
 
 env = Env()
 env.read_env()
@@ -77,7 +74,8 @@ async def change_keyboard(call: CallbackQuery,bot: Bot, state: FSMContext):
     text = f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
     text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
-    text += f"{link}"
+    view = instant_view(url=link)
+    text += f"{view}"
     if photo:
         photo=photo
     else:
@@ -121,7 +119,8 @@ async def previous_item(call: CallbackQuery,bot: Bot, state: FSMContext):
     text += f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
     text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
-    text += f"{link}"
+    view = instant_view(url=link)
+    text += f"{view}"
     if photo:
         photo=photo
     else:
@@ -163,7 +162,8 @@ async def next_item(call: CallbackQuery,bot: Bot, state: FSMContext):
     text += f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
     text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
-    text += f"{link}"
+    view = instant_view(url=link)
+    text += f"{view}"
     if photo:
         photo=photo
     else:
