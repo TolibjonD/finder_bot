@@ -10,11 +10,12 @@ from keyboards.inline.simple import simple, simple_two, MyCallback
 from aiogram.types.callback_query import CallbackQuery
 from aiogram import F
 from time import sleep
-from keyboards.default.startBtn import startBtn
+from keyboards.default.startBtn import startBtn, productsBtn
 from states import SearchingState, ItemsState
 from aiogram.fsm.context import FSMContext
 from finder import search
 from test import instant_view
+from rtx import sport
 
 env = Env()
 env.read_env()
@@ -73,9 +74,8 @@ async def change_keyboard(call: CallbackQuery,bot: Bot, state: FSMContext):
     sleep(1)
     text = f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
-    text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
     view = instant_view(url=link)
-    text += f"{view}"
+    text += f"\n<a href='{view}'>Batafsil...</a>"
     if photo:
         photo=photo
     else:
@@ -118,9 +118,8 @@ async def previous_item(call: CallbackQuery,bot: Bot, state: FSMContext):
     text = f"{index+1}-natija {len(items)} dan.\n"
     text += f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
-    text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
     view = instant_view(url=link)
-    text += f"{view}"
+    text += f"\n<a href='{view}'>Batafsil...</a>"
     if photo:
         photo=photo
     else:
@@ -161,9 +160,8 @@ async def next_item(call: CallbackQuery,bot: Bot, state: FSMContext):
     text = f"{index+1}-Natija.\n"
     text += f"{title}\n"
     text += f"<blockquote>{snippet}</blockquote>\n"
-    text += f"\n<a href='{link}'>Batafsil...</a>\n\n"
     view = instant_view(url=link)
-    text += f"{view}"
+    text += f"\n<a href='{view}'>Batafsil...</a>"
     if photo:
         photo=photo
     else:
@@ -194,6 +192,79 @@ async def searching(msg: types.Message,bot: Bot, state: FSMContext):
     await bot.send_message(chat_id=GROUP, text=f"Qidiruv knopkasi bosildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
     await state.set_state(SearchingState.query)
 
+
+@dp.message(F.text=="Sport mahsulotlari ⛹🏼‍♂️")
+async def sport_products(msg: types.Message):
+    await msg.answer("Pastdan kerakli bo'limni tanlang: ", reply_markup=productsBtn)
+
+
+@dp.message(F.text=="🔙 Bosh sahifa")
+async def cancel_to_start(msg: types.Message):
+    await msg.answer("Pastdagi tugmalardan birini bosing: ", reply_markup=startBtn)
+
+
+@dp.message(F.text=="Gainerlar - Massa olish")
+async def gainer_answer(msg: types.Message,bot: Bot):
+    await bot.send_message(chat_id=GROUP, text=f"Mahsulotlar knopkasi bosildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
+    data = sport(q="gainer")
+    products = data['products']
+    view = data['view']
+    photo = products[0]['photo']
+    title = products[0]['title']
+    status = products[0]['status']
+    desc = products[0]['desc']
+    price = products[0]['price']
+    url = products[0]['url']
+    content=""
+    content+=f"<b>{title}</b>\n"
+    content+=f"<b>{status}</b>\n"
+    content+=f"<b>{desc}</b>\n"
+    content+=f"<b>Narxi: {price}</b>\n\n"
+    content+=f"<a href='https://t.me/Saidkodirov'>Sotib olish</a>\n\n"
+    content+=f"<a href='{view}'>Barcha mahsulotlarni ko'rish</a>"
+    await msg.answer_photo(photo=photo,caption=content)
+
+@dp.message(F.text=="Protainlar")
+async def protain_answer(msg: types.Message,bot: Bot):
+    await bot.send_message(chat_id=GROUP, text=f"Mahsulotlar knopkasi bosildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
+    data = sport(q="protein")
+    products = data['products']
+    view = data['view']
+    photo = products[0]['photo']
+    title = products[0]['title']
+    status = products[0]['status']
+    desc = products[0]['desc']
+    price = products[0]['price']
+    url = products[0]['url']
+    content=""
+    content+=f"<b>{title}</b>\n"
+    content+=f"<b>{status}</b>\n"
+    content+=f"<b>{desc}</b>\n"
+    content+=f"<b>Narxi: {price}</b>\n\n"
+    content+=f"<a href='https://t.me/Saidkodirov'>Sotib olish</a>\n\n"
+    content+=f"<a href='{view}'>Barcha mahsulotlarni ko'rish</a>"
+    await msg.answer_photo(photo=photo,caption=content)
+
+@dp.message(F.text=="Kreatinlar")
+async def creatine_answer(msg: types.Message,bot: Bot):
+    await bot.send_message(chat_id=GROUP, text=f"Mahsulotlar knopkasi bosildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
+    data = sport(q="creatine")
+    products = data['products']
+    view = data['view']
+    photo = products[0]['photo']
+    title = products[0]['title']
+    status = products[0]['status']
+    desc = products[0]['desc']
+    price = products[0]['price']
+    url = products[0]['url']
+    content=""
+    content+=f"<b>{title}</b>\n"
+    content+=f"<b>{status}</b>\n"
+    content+=f"<b>{desc}</b>\n"
+    content+=f"<b>Narxi: {price}</b>\n\n"
+    content+=f"<a href='https://t.me/Saidkodirov'>Sotib olish</a>\n\n"
+    content+=f"<a href='{view}'>Barcha mahsulotlarni ko'rish</a>"
+    await msg.answer_photo(photo=photo,caption=content)
 
 
 @dp.message()
