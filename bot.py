@@ -18,22 +18,31 @@ from finder import search
 env = Env()
 env.read_env()
 BOT_TOKEN=env('BOT_TOKEN')
+ADMIN=5944280734
 
 dp = Dispatcher()
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 @dp.message(Command('help'))
 async def help(msg: types.Message):
+    text = f"/help buyrug'i {msg.from_user.mention_html(msg.from_user.full_name)} tomonidan ishlatildi."
+    await bot.send_message(chat_id=ADMIN, text=text)
     await msg.answer("Qidiruv tugmasini bosing va botga qidirmoqchi bo'lgan textingizni yuboring. Agar xatolilar kuzatilsa @Saidkodirov ga yozing.")
 
 @dp.message(StateFilter(SearchingState.query))
 async def simple_handler(msg: types.Message, state: FSMContext):
     text = msg.text
+    text_admin = f"{text} - {msg.from_user.mention_html(msg.from_user.full_name)} tomonidan yuborildi."
+    await bot.send_message(chat_id=ADMIN, text=text_admin)
     data = await search(text)
     if type(data) == str:
         await msg.answer(text=data)
+        
         await state.clear()
     else:
         ans_text = f"🔎 Qidiriv natijangiz bo'yicha {len(data)} ta ma'lumot topildi"
+        await bot.send_message(chat_id=ADMIN, text=f"{msg.from_user.mention_html(msg.from_user.full_name)}:\n\n")
+        await bot.send_message(chat_id=ADMIN, text=data)
         await msg.answer(text=ans_text, reply_markup=simple)
         await state.update_data({
             "query": data
@@ -73,8 +82,11 @@ async def change_keyboard(call: CallbackQuery, state: FSMContext):
 
     try:
         await call.message.answer_photo(photo=photo, caption=text, reply_markup=simple_two)
+        await bot.send_message(chat_id=ADMIN, text=f"{call.from_user.mention_html(call.from_user.full_name)}:\n\n")
+        await bot.send_photo(chat_id=ADMIN, photo=photo, caption=text, reply_markup=simple_two)
     except:
         await call.message.answer("Ma'lumot yoq yoki ma'lumot manbasi o'zgargan", reply_markup=simple_two)
+        await bot.send_message(chat_id=ADMIN, text=f"{call.from_user.mention_html(call.from_user.full_name)}:\n\n")
     await call.answer(cache_time=60)
 
 @dp.callback_query(MyCallback.filter(F.item=="prev"))
@@ -113,6 +125,7 @@ async def previous_item(call: CallbackQuery, state: FSMContext):
 
     try:
         await call.message.answer_photo(photo=photo, caption=text, reply_markup=simple_two)
+        await bot.send_photo(chat_id=ADMIN, photo=photo, caption=text, reply_markup=simple_two)
     except:
         await call.message.answer("Ma'lumot yoq yoki ma'lumot manbasi o'zgargan", reply_markup=simple_two)
     await call.answer(cache_time=60)
@@ -156,6 +169,7 @@ async def next_item(call: CallbackQuery, state: FSMContext):
 
     try:
         await call.message.answer_photo(photo=photo, caption=text, reply_markup=simple_two)
+        await bot.send_photo(chat_id=ADMIN, photo=photo, caption=text, reply_markup=simple_two)
     except:
         await call.message.answer("Ma'lumot yoq yoki ma'lumot manbasi o'zgargan", reply_markup=simple_two)
     await call.answer(cache_time=60)
@@ -164,15 +178,18 @@ async def next_item(call: CallbackQuery, state: FSMContext):
 async def calcel_simple(call: CallbackQuery, state: FSMContext):
     await state.clear()
     await call.answer("Siz qidiruv natijalarini yopdingiz !", show_alert=True)
+    await bot.send_message(chat_id=ADMIN, text=f"Cancel ishlatildi - {call.from_user.mention_html(call.from_user.full_name)}")
     await call.message.delete()
 
 @dp.message(CommandStart())
 async def start_bot(msg: types.Message):
+    await bot.send_message(chat_id=ADMIN, text=f"Bot ishlatildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
     await msg.answer(f"Hush kelibsiz {msg.from_user.full_name}\nPastdagi tugmani bosish orqali qidiruvlarni amalga oshiring.", reply_markup=startBtn)
 
 @dp.message(F.text=="Qidiruv...")
 async def searching(msg: types.Message, state: FSMContext):
     await msg.answer("Nimani izlamoqchi bo'lsangiz yozing, Marhamat: ")
+    await bot.send_message(chat_id=ADMIN, text=f"Qidiruv knopkasi bosildi - {msg.from_user.mention_html(msg.from_user.full_name)}")
     await state.set_state(SearchingState.query)
 
 
@@ -186,13 +203,13 @@ async def echo_handler(message: types.Message) -> None:
     """
     try:
         # Send a copy of the received message
-        await message.send_copy(chat_id=message.chat.id)
+        await message.answer("Qidiruvni boshlash uchun pastdan tugmani bosing.")
+        await bot.send_message(chat_id=ADMIN, text=f"{message.text} - {message.from_user.mention_html(message.from_user.full_name)}")
     except TypeError:
         # But not all the types is supported to be copied so need to handle it
         await message.answer("Nice try!")
 
 async def main():
-    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

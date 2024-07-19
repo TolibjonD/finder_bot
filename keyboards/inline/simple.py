@@ -13,7 +13,7 @@ simple = InlineKeyboardMarkup(
                                  )
         ],
         [
-            InlineKeyboardButton(text="🔙 Ortga qaytish",
+            InlineKeyboardButton(text="🔙 Qidiruvni tugallash",
                                  callback_data=MyCallback(item="cancel", index="0").pack()
                                  )
         ]
