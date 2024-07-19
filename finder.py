@@ -9,7 +9,7 @@ SEARCH_ENGINE_ID = env("SEARCH_ENGINE_ID")
 
         
 
-def search(text):
+async def search(text):
     url = 'https://www.googleapis.com/customsearch/v1'
     params={
         'q': text,
